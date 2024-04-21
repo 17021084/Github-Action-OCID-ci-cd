@@ -8,13 +8,13 @@ permissions:
       contents: read    # This is required for actions/checkout
 jobs:
   DemoOIDC:
-    runs-on: demo
+    runs-on: ubuntu-latest
     steps:
       - name: Git clone the repository
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
 
       - name: configure aws credentials
-        uses: aws-actions/configure-aws-credentials@v1
+        uses: aws-actions/configure-aws-credentials@v3
         with:
           role-to-assume: arn:aws:iam::656898940349:role/github-action-oicd
           role-session-name: samplerolesession
