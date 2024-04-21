@@ -1,0 +1,22 @@
+{
+  "Version": "2012-10-17",
+  "Statement": [
+    {
+      "Sid": "Github-action-oidc-demo",
+      "Effect": "Allow",
+      "Principal": {
+        "Federated": "arn:aws:iam::656898940349:oidc-provider/token.actions.githubusercontent.com"
+      },
+      "Action": "sts:AssumeRoleWithWebIdentity",
+      "Condition": {
+        "StringEquals": {
+          "token.actions.githubusercontent.com:sub": [
+            "repo:17021084/Github-Action-OIDC-ci-cd:pull_request",
+            "repo:17021084/Github-Action-OIDC-ci-cd:ref:refs/heads/main"
+          ],
+          "token.actions.githubusercontent.com:aud": "sts.amazonaws.com"
+        }
+      }
+    }
+  ]
+}
