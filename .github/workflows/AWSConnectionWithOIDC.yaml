@@ -2,7 +2,8 @@ name: AWS OIDC Connect Demo
 on:
   push
 env:
-  AWS_REGION : "ap-northeast-1"   
+  AWS_REGION : "ap-northeast-1"
+  AWS_S3_BUCKET : "demo-oidc-ci-cd-react"
 permissions:
       id-token: write   # This is required for requesting the JWT
       contents: read    # This is required for actions/checkout
@@ -13,12 +14,23 @@ jobs:
       - name: Git clone the repository
         uses: actions/checkout@v4
 
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 14
+      - name: Install dependencies
+        run: npm install
+      - name: Run unit test without prompt
+        run: npm test -- --watchAll=false
+      - name: Build React app
+        run: npm run build
       - name: configure aws credentials
         uses: aws-actions/configure-aws-credentials@v3
         with:
           role-to-assume: arn:aws:iam::656898940349:role/github-action-oicd
           role-session-name: samplerolesession
           aws-region: ${{ env.AWS_REGION }}
-
-      - name: Print AWS s3 bucket
-        run:  aws s3 ls
+      - name: Remove all files
+        run:  aws s3 rm s3://${env.S3_BUCKET_NAME} --recursive
+      - name: Upload build to s3
+        run:  aws s3 cp --recursive ./build s3://${env.S3_BUCKET_NAME}
